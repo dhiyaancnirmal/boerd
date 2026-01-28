@@ -1,0 +1,40 @@
+$ turbo dev
+• turbo 2.7.6
+• Packages in scope: @boerd/database, @boerd/storage, @boerd/web
+• Running dev in 3 packages
+• Remote caching disabled
+@boerd/storage:dev: cache bypass, force executing 1853cd98aaf574b2
+@boerd/web:dev: cache bypass, force executing bfc094aef16ebbca
+@boerd/storage:dev: $ bun run build --watch
+@boerd/web:dev: $ next dev --turbopack
+@boerd/storage:dev: $ bun build src/index.ts --outdir dist --target node && tsc --emitDeclarationOnly --watch
+@boerd/storage:dev: Bundled 223 modules in 113ms
+@boerd/storage:dev: 
+@boerd/storage:dev:   index.js  1.61 MB  (entry point)
+@boerd/storage:dev: 
+@boerd/storage:dev: [2J[3J[H10:35:25 PM - Starting compilation in watch mode...
+@boerd/storage:dev: 
+@boerd/web:dev: ⚠ Port 3000 is in use by process 51178, using available port 3001 instead.
+@boerd/web:dev: ▲ Next.js 16.1.6 (Turbopack)
+@boerd/web:dev: - Local:         http://localhost:3001
+@boerd/web:dev: - Network:       http://100.69.186.57:3001
+@boerd/web:dev: - Experiments (use with caution):
+@boerd/web:dev:   · serverActions
+@boerd/web:dev: 
+@boerd/web:dev: ✓ Starting...
+@boerd/storage:dev: 
+@boerd/storage:dev: 10:35:26 PM - Found 0 errors. Watching for file changes.
+@boerd/web:dev: ⨯ Unable to acquire lock at /Users/dhiyaan/Code/boerd/apps/web/.next/dev/lock, is another instance of next dev running?
+@boerd/web:dev:   Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
+@boerd/web:dev: [?25h
+@boerd/web:dev: error: script "dev" exited with code 1
+@boerd/web:dev: ERROR: command finished with error: command (/Users/dhiyaan/Code/boerd/apps/web) /Users/dhiyaan/.nvm/versions/node/v24.11.0/bin/bun run dev exited (1)
+@boerd/web#dev: command (/Users/dhiyaan/Code/boerd/apps/web) /Users/dhiyaan/.nvm/versions/node/v24.11.0/bin/bun run dev exited (1)
+
+ Tasks:    0 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    2.307s 
+Failed:    @boerd/web#dev
+
+ ERROR  run failed: command  exited (1)
+error: script "dev" exited with code 1
