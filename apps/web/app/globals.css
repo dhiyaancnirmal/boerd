@@ -1,4 +1,4 @@
-@import url('https://db.onlinewebfonts.com/c/3c76d979e72206bc554a1863d96ac5d4?family=Neue+Haas+Grotesk+Text+Pro');
+@import url("https://db.onlinewebfonts.com/c/3c76d979e72206bc554a1863d96ac5d4?family=Neue+Haas+Grotesk+Text+Pro");
 
 @tailwind base;
 @tailwind components;
@@ -7,27 +7,27 @@
 :root {
   /* Backgrounds */
   --bg-primary: #000000;
-  
+
   /* Text */
-  --text-primary: #FFFFFF;
+  --text-primary: #ffffff;
   --text-secondary: #888888;
-  --text-accent: #6B8E6B;
-  
+  --text-accent: #6b8e6b;
+
   /* Borders */
   --border-subtle: #333333;
   --border-card: #444444;
-  
+
   /* Font */
-  --font-sans: 'Neue Haas Grotesk Text Pro', Arial, sans-serif;
+  --font-sans: "Neue Haas Grotesk Text Pro", Arial, sans-serif;
 }
 
 [data-theme="light"] {
-  --bg-primary: #FFFFFF;
+  --bg-primary: #ffffff;
   --text-primary: #000000;
   --text-secondary: #666666;
-  --text-accent: #4A6B4A;
-  --border-subtle: #E0E0E0;
-  --border-card: #CCCCCC;
+  --text-accent: #6b8e6b;
+  --border-subtle: #e5e7eb;
+  --border-card: #d1d5db;
 }
 
 * {

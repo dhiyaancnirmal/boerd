@@ -1,21 +1,34 @@
-'use server';
+"use server";
 
-import { db, connections, boerds, eq, and, desc, asc, gt, lt, sql } from '@boerd/database';
-import { createId } from '@paralleldrive/cuid2';
-import { revalidatePath } from 'next/cache';
+import {
+  db,
+  connections,
+  boerds,
+  eq,
+  and,
+  desc,
+  asc,
+  gt,
+  lt,
+  sql,
+} from "@boerd/database";
+import { createId } from "@paralleldrive/cuid2";
+import { revalidatePath } from "next/cache";
 
 /**
  * Connect a block to a boerd
  */
 export async function connectBlock(
   blockId: string,
-  boerdId: string
+  boerdId: string,
 ): Promise<boolean> {
   // Check if already connected
   const existing = await db
     .select()
     .from(connections)
-    .where(and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)))
+    .where(
+      and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)),
+    )
     .limit(1);
 
   if (existing.length > 0) {
@@ -46,7 +59,7 @@ export async function connectBlock(
     .set({ updatedAt: new Date() })
     .where(eq(boerds.id, boerdId));
 
-  revalidatePath('/');
+  revalidatePath("/");
   return true;
 }
 
@@ -55,11 +68,13 @@ export async function connectBlock(
  */
 export async function disconnectBlock(
   blockId: string,
-  boerdId: string
+  boerdId: string,
 ): Promise<boolean> {
   await db
     .delete(connections)
-    .where(and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)));
+    .where(
+      and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)),
+    );
 
   // Update boerd's updatedAt
   await db
@@ -67,7 +82,7 @@ export async function disconnectBlock(
     .set({ updatedAt: new Date() })
     .where(eq(boerds.id, boerdId));
 
-  revalidatePath('/');
+  revalidatePath("/");
   return true;
 }
 
@@ -77,7 +92,7 @@ export async function disconnectBlock(
  */
 export async function reorderBlocks(
   boerdId: string,
-  blockIds: string[]
+  blockIds: string[],
 ): Promise<boolean> {
   // Use a transaction to update all positions
   // In Drizzle with SQLite, we can use db.batch for multiple statements
@@ -86,7 +101,9 @@ export async function reorderBlocks(
     db
       .update(connections)
       .set({ position: index })
-      .where(and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)))
+      .where(
+        and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)),
+      ),
   );
 
   // Execute all updates
@@ -98,7 +115,7 @@ export async function reorderBlocks(
     .set({ updatedAt: new Date() })
     .where(eq(boerds.id, boerdId));
 
-  revalidatePath('/');
+  revalidatePath("/");
   return true;
 }
 
@@ -108,13 +125,15 @@ export async function reorderBlocks(
 export async function moveBlock(
   blockId: string,
   boerdId: string,
-  newPosition: number
+  newPosition: number,
 ): Promise<boolean> {
   // Get current connection
   const [current] = await db
     .select()
     .from(connections)
-    .where(and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)))
+    .where(
+      and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)),
+    )
     .limit(1);
 
   if (!current) return false;
@@ -132,8 +151,8 @@ export async function moveBlock(
         and(
           eq(connections.boerdId, boerdId),
           gt(connections.position, oldPosition),
-          lt(connections.position, newPosition + 1)
-        )
+          lt(connections.position, newPosition + 1),
+        ),
       );
   } else {
     // Moving up - shift items between new and old position down
@@ -144,8 +163,8 @@ export async function moveBlock(
         and(
           eq(connections.boerdId, boerdId),
           gt(connections.position, newPosition - 1),
-          lt(connections.position, oldPosition)
-        )
+          lt(connections.position, oldPosition),
+        ),
       );
   }
 
@@ -153,9 +172,11 @@ export async function moveBlock(
   await db
     .update(connections)
     .set({ position: newPosition })
-    .where(and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)));
+    .where(
+      and(eq(connections.blockId, blockId), eq(connections.boerdId, boerdId)),
+    );
 
-  revalidatePath('/');
+  revalidatePath("/");
   return true;
 }
 
@@ -184,8 +205,8 @@ export async function getRecentActivity(limit = 50) {
   const grouped: Map<
     string,
     {
-      boerd: typeof activity[0]['boerd'];
-      blocks: typeof activity[0]['block'][];
+      boerd: (typeof activity)[0]["boerd"];
+      blocks: (typeof activity)[0]["block"][];
       connectedAt: Date;
     }
   > = new Map();
@@ -207,4 +228,22 @@ export async function getRecentActivity(limit = 50) {
   });
 
   return Array.from(grouped.values()).slice(0, limit);
+}
+
+/**
+ * Get all connections for a specific block
+ */
+export async function getBlockConnections(blockId: string) {
+  return await db.query.connections.findMany({
+    where: eq(connections.blockId, blockId),
+    with: {
+      boerd: {
+        with: {
+          user: true,
+        },
+      },
+      user: true,
+    },
+    orderBy: [desc(connections.connectedAt)],
+  });
 }

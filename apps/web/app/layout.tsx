@@ -1,13 +1,18 @@
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: 'boerd',
-    template: '%s — boerd',
+    default: "boerd",
+    template: "%s — boerd",
   },
-  description: 'Open-source, self-hostable platform for building mixed-media moodboards',
+  description:
+    "Open-source, self-hostable platform for building mixed-media moodboards",
 };
+
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import ThemeToggle from "@/components/theme/ThemeToggle";
+import Header from "@/components/layout/Header";
 
 export default function RootLayout({
   children,
@@ -15,15 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning data-theme="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className="bg-black text-white antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:border focus:border-black focus:bg-white"
-        >
-          Skip to content
-        </a>
-        {children}
+        <ThemeProvider>
+          <Header />
+          {children}
+          <ThemeToggle />
+        </ThemeProvider>
       </body>
     </html>
   );
