@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+dist/
+*.tsbuildinfo
+
+# Data
+data/
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Turbo
+.turbo/
+
+# Drizzle
+drizzle/

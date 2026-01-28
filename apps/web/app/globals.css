@@ -1,0 +1,132 @@
+@import url('https://db.onlinewebfonts.com/c/3c76d979e72206bc554a1863d96ac5d4?family=Neue+Haas+Grotesk+Text+Pro');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #000000;
+  
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #888888;
+  --text-accent: #6B8E6B;
+  
+  /* Borders */
+  --border-subtle: #333333;
+  --border-card: #444444;
+  
+  /* Font */
+  --font-sans: 'Neue Haas Grotesk Text Pro', Arial, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg-primary: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-accent: #4A6B4A;
+  --border-subtle: #E0E0E0;
+  --border-card: #CCCCCC;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Links default to accent color */
+a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Selection */
+::selection {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+/* Focus */
+:focus-visible {
+  outline: 1px solid var(--text-accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+}
+
+/* Placeholder */
+::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utility: masonry grid */
+.masonry {
+  columns: 1;
+  column-gap: 24px;
+}
+
+@media (min-width: 640px) {
+  .masonry {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry {
+    columns: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .masonry {
+    columns: 4;
+  }
+}
+
+.masonry > * {
+  break-inside: avoid;
+  margin-bottom: 24px;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "boerd",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source, self-hostable Are.na alternative for building mixed-media moodboards",
+  "license": "MIT",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "start": "turbo start",
+    "lint": "turbo lint",
+    "test": "bun test",
+    "format": "prettier --write .",
+    "typecheck": "turbo typecheck",
+    "clean": "turbo clean && rm -rf node_modules",
+    "setup": "bun run scripts/setup.ts",
+    "db:generate": "bun run --filter @boerd/database generate",
+    "db:push": "bun run --filter @boerd/database push",
+    "db:migrate": "bun run --filter @boerd/database migrate"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "prettier": "^3.4.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "bun@1.2.0"
+}
