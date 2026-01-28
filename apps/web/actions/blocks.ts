@@ -1,21 +1,35 @@
-'use server';
+"use server";
 
-import { db, blocks, connections, users, type Block, eq, desc, and } from '@boerd/database';
-import { createId } from '@paralleldrive/cuid2';
-import { detectContentType } from '@/lib/detect';
-import { fetchUrlMetadata, extractThumbnailUrl, extractTitle } from '@/lib/metadata';
-import { processImage, downloadAndProcessImage, processFile } from '@/lib/thumbnails';
-import { revalidatePath } from 'next/cache';
+import {
+  db,
+  blocks,
+  connections,
+  users,
+  type Block,
+  eq,
+  desc,
+  and,
+} from "@boerd/database";
+import { createId } from "@paralleldrive/cuid2";
+import { detectContentType } from "@/lib/detect";
+import {
+  fetchUrlMetadata,
+  extractThumbnailUrl,
+  extractTitle,
+} from "@/lib/metadata";
+import { downloadAndProcessImage } from "@/lib/thumbnails";
+import { processImage, processFile } from "@/lib/storage";
+import { revalidatePath } from "next/cache";
 
 // Default user for MVP (no auth yet)
-const DEFAULT_USER_ID = 'default-user';
+const DEFAULT_USER_ID = "default-user";
 
 /**
  * Create a new block from text input (paste or type)
  */
 export async function createBlockFromText(
   input: string,
-  boerdId?: string
+  boerdId?: string,
 ): Promise<Block> {
   const type = detectContentType(input);
   const id = createId();
@@ -29,10 +43,10 @@ export async function createBlockFromText(
     updatedAt: now,
   };
 
-  if (type === 'text') {
+  if (type === "text") {
     // Plain text block
     blockData.content = input;
-  } else if (type === 'link' || type === 'embed') {
+  } else if (type === "link" || type === "embed") {
     // URL - fetch metadata
     blockData.sourceUrl = input;
 
@@ -53,7 +67,7 @@ export async function createBlockFromText(
       og: og || undefined,
       oembed: oembed || undefined,
     };
-  } else if (type === 'image') {
+  } else if (type === "image") {
     // Direct image URL
     blockData.sourceUrl = input;
     const processed = await downloadAndProcessImage(input);
@@ -65,12 +79,15 @@ export async function createBlockFromText(
         height: processed.height,
       };
     }
-  } else if (type === 'video' || type === 'audio' || type === 'pdf') {
+  } else if (type === "video" || type === "audio" || type === "pdf") {
     // Direct media URL
     blockData.sourceUrl = input;
   }
 
-  const [block] = await db.insert(blocks).values(blockData as Block).returning();
+  const [block] = await db
+    .insert(blocks)
+    .values(blockData as Block)
+    .returning();
 
   // Auto-connect to boerd if specified
   if (boerdId) {
@@ -84,7 +101,7 @@ export async function createBlockFromText(
     });
   }
 
-  revalidatePath('/');
+  revalidatePath("/");
   return block;
 }
 
@@ -93,7 +110,7 @@ export async function createBlockFromText(
  */
 export async function createBlockFromFile(
   file: File,
-  boerdId?: string
+  boerdId?: string,
 ): Promise<Block> {
   const type = detectContentType(file);
   const id = createId();
@@ -109,26 +126,29 @@ export async function createBlockFromFile(
     updatedAt: now,
   };
 
-  if (type === 'image') {
+  if (type === "image") {
     const processed = await processImage(buffer, file.name);
-    blockData.assetPath = processed.originalPath;
-    blockData.thumbnailPath = processed.thumbnailPath;
+    blockData.assetPath = processed.originalUrl;
+    blockData.thumbnailPath = processed.thumbnailUrl;
     blockData.metadata = {
       width: processed.width,
       height: processed.height,
       mimeType: file.type,
-      size: processed.size,
+      size: buffer.length,
     };
   } else {
     const processed = await processFile(buffer, file.name, file.type);
-    blockData.assetPath = processed.assetPath;
+    blockData.assetPath = processed.url;
     blockData.metadata = {
-      mimeType: processed.mimeType,
+      mimeType: file.type,
       size: processed.size,
     };
   }
 
-  const [block] = await db.insert(blocks).values(blockData as Block).returning();
+  const [block] = await db
+    .insert(blocks)
+    .values(blockData as Block)
+    .returning();
 
   // Auto-connect to boerd if specified
   if (boerdId) {
@@ -142,7 +162,7 @@ export async function createBlockFromFile(
     });
   }
 
-  revalidatePath('/');
+  revalidatePath("/");
   return block;
 }
 
@@ -151,7 +171,7 @@ export async function createBlockFromFile(
  */
 export async function updateBlock(
   id: string,
-  data: { title?: string; description?: string }
+  data: { title?: string; description?: string },
 ): Promise<Block | null> {
   const [block] = await db
     .update(blocks)
@@ -162,7 +182,7 @@ export async function updateBlock(
     .where(eq(blocks.id, id))
     .returning();
 
-  revalidatePath('/');
+  revalidatePath("/");
   return block || null;
 }
 
@@ -171,14 +191,18 @@ export async function updateBlock(
  */
 export async function deleteBlock(id: string): Promise<boolean> {
   const result = await db.delete(blocks).where(eq(blocks.id, id));
-  revalidatePath('/');
+  revalidatePath("/");
   return true;
 }
 
 /**
  * Get a single block with user info
  */
-export async function getBlock(id: string): Promise<(Block & { user: { username: string; displayName: string | null } }) | null> {
+export async function getBlock(
+  id: string,
+): Promise<
+  (Block & { user: { username: string; displayName: string | null } }) | null
+> {
   const result = await db
     .select({
       block: blocks,

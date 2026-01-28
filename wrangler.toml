@@ -1,0 +1,42 @@
+name = "boerd"
+main = "apps/web/worker.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "boerd"
+database_id = ""
+
+# R2 Storage binding
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "boerd-uploads"
+
+# Environment variables
+[vars]
+DATABASE_TYPE = "d1"
+STORAGE_TYPE = "r2"
+NODE_ENV = "production"
+
+# Build configuration
+[build]
+command = "bun install && bun run build"
+
+# Worker configuration
+[placement]
+mode = "smart"
+
+# Routing
+[[routes]]
+pattern = "https://your-domain.com/*"
+zone_name = ""
+
+# Limit configuration
+[limits]
+cpu_ms = 10000
+
+# Logging
+[observability]
+enabled = true
+head_sampling_rate = 1

@@ -1,0 +1,37 @@
+# fly.toml app configuration for Boerd
+# Deploy: fly launch
+
+app = "boerd"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  DATA_DIR = "/data"
+  PORT = "3000"
+
+[[mounts]]
+  source = "boerd_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 0
+  max_machines_running = 1
+
+[[http_service.checks]]
+  interval = "15s"
+  timeout = "10s"
+  grace_period = "5s"
+  method = "GET"
+  path = "/"
+
+[vm]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512

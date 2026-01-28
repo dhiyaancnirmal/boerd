@@ -1,0 +1,30 @@
+services:
+  # Web Application Service
+  - type: web
+    name: boerd
+    env: docker
+    plan: free
+    buildCommand: bun install && bun run build
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATA_DIR
+        value: /opt/render/project/data
+    disk:
+      name: data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
+    region: oregon
+    branch: main
+
+# Optional: PostgreSQL service (not used by default, but available if needed)
+#  - type: pserv
+#    name: boerd-db
+#    plan: free
+#    maxConnections: 10
+#    database: boerd
+#    user: boerd
