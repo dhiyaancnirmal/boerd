@@ -1,10 +1,8 @@
-"use client";
-
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { Header } from "@/components/layout/Header";
-import ThemeToggle from "@/components/theme/ThemeToggle";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export const metadata = {
   title: "Home",
